@@ -33,34 +33,48 @@ public class Tank {
 
         int lineX1 = x + Tank.WIDTH/2;
         int lineY1 = y + Tank.HEIGHT/2;
-        int lineX2, lineY2 = 0;
+        int lineX2 = 0;
+        int lineY2 = 0;
         switch(ptDir){
             case U:
-                g.drawLine(lineX1, lineY1, 0, 0);
+                lineX2 = x + Tank.WIDTH/2;
+                lineY2 = y;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
             case D:
-                g.drawLine(lineX1, lineY1, 0, 0);
+                lineX2 = x + Tank.WIDTH/2;
+                lineY2 = y + Tank.HEIGHT;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
             case L:
-                g.drawLine(lineX1, lineY1, x, y + Tank.HEIGHT/2);
+                lineX2 = x;
+                lineY2 = y + Tank.HEIGHT/2;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
             case R:
-                g.drawLine(lineX1, lineY1, 0, 0);
+                lineX2 = x + Tank.WIDTH;
+                lineY2 = y + Tank.HEIGHT/2;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
             case LU:
-                g.drawLine(lineX1, lineY1, 0, 0);
+                lineX2 = x;
+                lineY2 = y;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
             case LD:
-                g.drawLine(lineX1, lineY1, 0, 0);
+                lineX2 = x;
+                lineY2 = y + Tank.HEIGHT;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
             case RU:
-                g.drawLine(lineX1, lineY1, 0, 0);
+                lineX2 = x + Tank.WIDTH;
+                lineY2 = y;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
             case RD:
-                g.drawLine(lineX1, lineY1, 0, 0);
-                break;
-            case STOP:
-                g.drawLine(lineX1, lineY1, 0, 0);
+                lineX2 = x + Tank.WIDTH;
+                lineY2 = y + Tank.HEIGHT;
+                g.drawLine(lineX1, lineY1, lineX2, lineY2);
                 break;
         }
 
@@ -99,6 +113,9 @@ public class Tank {
                 break;
             case STOP:
                 break;
+        }
+        if(this.dir != Direction.STOP){
+            this.ptDir = this.dir;
         }
     }
 
@@ -139,9 +156,6 @@ public class Tank {
             case KeyEvent.VK_D:
                 vk_right = true;
                 break;
-            case KeyEvent.VK_J:
-                fire();
-                break;
         }
         locateDirection();
     }
@@ -161,6 +175,9 @@ public class Tank {
             case KeyEvent.VK_D:
                 vk_right = false;
                 break;
+            case KeyEvent.VK_J:
+                fire();
+                break;
         }
         locateDirection();
     }
@@ -169,7 +186,7 @@ public class Tank {
         //计算子弹的坐标 位置固定在坦克的中心
         int missileX = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
         int missileY = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
-        Missile m = new Missile(missileX, missileY, dir);
-        tc.m = m;
+        Missile m = new Missile(missileX, missileY, ptDir);
+        tc.missiles.add(m);
     }
 }
