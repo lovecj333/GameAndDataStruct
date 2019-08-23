@@ -6,7 +6,7 @@ public class SelectSort {
 
     public static void main(String[] args) {
         //int[] arr = {101, 34, 118, 1};
-        int[] arr = new int[8];
+        int[] arr = new int[80000];
         for (int i = 0; i < arr.length; i++) {
             arr[i] = (int)(Math.random() * 8000000);
         }
@@ -14,10 +14,10 @@ public class SelectSort {
         selectSort(arr);
         long n2 = System.currentTimeMillis();
         System.out.println(n2 - n1);
-        System.out.println(Arrays.toString(arr));
+        //System.out.println(Arrays.toString(arr));
     }
 
-    public static void selectSort(int[] arr){
+    private static void selectSort(int[] arr){
         for (int i = 0; i < arr.length - 1; i++) {
             int minIndex = i;
             for (int j = i+1; j < arr.length; j++) {

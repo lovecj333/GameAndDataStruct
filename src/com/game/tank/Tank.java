@@ -117,6 +117,18 @@ public class Tank {
         if(this.dir != Direction.STOP){
             this.ptDir = this.dir;
         }
+        if(x < 0){
+            x = 0;
+        }
+        if(y < 30){
+            y = 30;
+        }
+        if(x + Tank.WIDTH > TankClient.GAME_WIDTH){
+            x = TankClient.GAME_WIDTH - Tank.WIDTH;
+        }
+        if(y + Tank.HEIGHT > TankClient.GAME_HEIGHT){
+            y = TankClient.GAME_HEIGHT - Tank.HEIGHT;
+        }
     }
 
     private void locateDirection(){
@@ -186,7 +198,7 @@ public class Tank {
         //计算子弹的坐标 位置固定在坦克的中心
         int missileX = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
         int missileY = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
-        Missile m = new Missile(missileX, missileY, ptDir);
+        Missile m = new Missile(missileX, missileY, ptDir, this.tc);
         tc.missiles.add(m);
     }
 }
