@@ -12,6 +12,8 @@ public class Tank {
     private int y;
     private Direction dir = Direction.STOP;
     private Direction ptDir = Direction.D;
+    private boolean good;
+    private boolean live = true;
     private TankClient tc;
 
     private boolean vk_up = false;
@@ -19,15 +21,23 @@ public class Tank {
     private boolean vk_left = false;
     private boolean vk_right = false;
 
-    public Tank(int x, int y, TankClient tc) {
+    public Tank(int x, int y, boolean good, TankClient tc) {
         this.x = x;
         this.y = y;
+        this.good = good;
         this.tc = tc;
     }
 
     public void draw(Graphics g){
+        if(!live){
+            return;
+        }
         Color c = g.getColor();
-        g.setColor(Color.RED);
+        if(good){
+            g.setColor(Color.RED);
+        }else{
+            g.setColor(Color.BLUE);
+        }
         g.fillOval(x, y, WIDTH, HEIGHT);
         g.setColor(c);
 
@@ -200,5 +210,17 @@ public class Tank {
         int missileY = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
         Missile m = new Missile(missileX, missileY, ptDir, this.tc);
         tc.missiles.add(m);
+    }
+
+    public Rectangle getRect(){
+        return new Rectangle(x, y, WIDTH, HEIGHT);
+    }
+
+    public boolean isLive() {
+        return live;
+    }
+
+    public void setLive(boolean live) {
+        this.live = live;
     }
 }
