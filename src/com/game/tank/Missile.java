@@ -1,6 +1,7 @@
 package com.game.tank;
 
 import java.awt.*;
+import java.util.List;
 
 public class Missile {
 
@@ -82,6 +83,12 @@ public class Missile {
             this.live = false;
             Explode e = new Explode(x, y, tc);
             this.tc.explodes.add(e);
+        }
+    }
+
+    public void hitTanks(List<Tank> enemyTanks){
+        for (Tank t : enemyTanks) {
+            hitTank(t);
         }
     }
 }

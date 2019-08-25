@@ -14,7 +14,7 @@ public class TankClient extends Frame {
     public static final int GAME_HEIGHT = 600;
     Image offScreenImage = null;
     Tank myTank = new Tank(50, 50, true,this);
-    Tank enemyTank = new Tank(100,100,false,this);
+    List<Tank> enemyTanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
     List<Missile> missiles = new ArrayList<>();
 
@@ -32,6 +32,9 @@ public class TankClient extends Frame {
         this.setResizable(false);
         this.setVisible(true);
         this.addKeyListener(new KeyMonitor());
+        for(int i = 0; i < 10; i++){
+            enemyTanks.add(new Tank(100+(50*(i+1)),100,false,this));
+        }
         new Thread(new PaintThread()).start();
     }
 
@@ -39,17 +42,21 @@ public class TankClient extends Frame {
     public void paint(Graphics g) {
         g.drawString("missiles count : "+missiles.size(),10,50);
         g.drawString("explodes count : "+explodes.size(),10,70);
+        g.drawString("enemyTanks count : "+enemyTanks.size(),10,90);
         for(int i = 0; i < missiles.size(); i++){
             Missile m = missiles.get(i);
-            m.hitTank(enemyTank);
+            m.hitTanks(enemyTanks);
             m.draw(g);
         }
         for(int i = 0; i < explodes.size(); i++){
             Explode e = explodes.get(i);
             e.draw(g);
         }
+        for(int i = 0; i < enemyTanks.size(); i++){
+            Tank enemyTank = enemyTanks.get(i);
+            enemyTank.draw(g);
+        }
         myTank.draw(g);
-        enemyTank.draw(g);
     }
 
     @Override
