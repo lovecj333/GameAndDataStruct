@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 
-//服务器端业务处理类
+//服务端业务处理类
 public class NettyServerHandler extends ChannelInboundHandlerAdapter{
 
     //读取数据事件

@@ -2,18 +2,21 @@ package com.game.tank;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 public class Tank {
 
     public static final int SPEED = 5;
     public static final int WIDTH = 30;
     public static final int HEIGHT = 30;
+    private static Random r = new Random();
     private int x;
     private int y;
-    private Direction dir = Direction.STOP;
+    private Direction dir;
     private Direction ptDir = Direction.D;
     private boolean good;
     private boolean live = true;
+    private int step = r.nextInt(12) + 3;
     private TankClient tc;
 
     private boolean vk_up = false;
@@ -21,10 +24,11 @@ public class Tank {
     private boolean vk_left = false;
     private boolean vk_right = false;
 
-    public Tank(int x, int y, boolean good, TankClient tc) {
+    public Tank(int x, int y, boolean good, Direction dir, TankClient tc) {
         this.x = x;
         this.y = y;
         this.good = good;
+        this.dir = dir;
         this.tc = tc;
     }
 
@@ -142,6 +146,18 @@ public class Tank {
         if(y + Tank.HEIGHT > TankClient.GAME_HEIGHT){
             y = TankClient.GAME_HEIGHT - Tank.HEIGHT;
         }
+        if(!good){
+            if(step == 0){
+                step = r.nextInt(12) + 3;
+                //EnemyTank每次move之后都随机方向加入step是为了转方向平缓一些
+                Direction[] dirs = Direction.values();
+                this.dir = dirs[r.nextInt(dirs.length)];
+            }
+            step--;
+            if(r.nextInt(40) > 38){
+                this.fire();
+            }
+        }
     }
 
     private void locateDirection(){
@@ -208,10 +224,13 @@ public class Tank {
     }
 
     public void fire(){
+        if(!live){
+            return;
+        }
         //计算子弹的坐标 位置固定在坦克的中心
         int missileX = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
         int missileY = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
-        Missile m = new Missile(missileX, missileY, ptDir, this.tc);
+        Missile m = new Missile(missileX, missileY, good, ptDir, this.tc);
         tc.missiles.add(m);
     }
 
@@ -225,5 +244,9 @@ public class Tank {
 
     public void setLive(boolean live) {
         this.live = live;
+    }
+
+    public boolean isGood() {
+        return good;
     }
 }
