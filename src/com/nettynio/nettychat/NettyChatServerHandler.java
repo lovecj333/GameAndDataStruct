@@ -37,4 +37,9 @@ public class NettyChatServerHandler extends SimpleChannelInboundHandler<String>{
             }
         }
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.err.println(cause.getMessage());
+    }
 }
