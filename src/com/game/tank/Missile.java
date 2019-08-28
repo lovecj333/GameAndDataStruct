@@ -91,9 +91,9 @@ public class Missile {
         }
     }
 
-    public void hitTanks(List<Tank> enemyTanks){
-        for (int i = 0; i < enemyTanks.size(); i++) {
-            hitTank(enemyTanks.get(i));
+    public void hitTanks(List<Tank> tanks){
+        for (int i = 0; i < tanks.size(); i++) {
+            hitTank(tanks.get(i));
         }
     }
 

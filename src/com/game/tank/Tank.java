@@ -2,6 +2,7 @@ package com.game.tank;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Random;
 
 public class Tank {
@@ -225,6 +226,9 @@ public class Tank {
             case KeyEvent.VK_J:
                 fire();
                 break;
+            case KeyEvent.VK_U:
+                superFire();
+                break;
         }
         locateDirection();
     }
@@ -240,6 +244,19 @@ public class Tank {
         tc.missiles.add(m);
     }
 
+    public void superFire(){
+        if(!live){
+            return;
+        }
+        Direction[] dirs = Direction.values();
+        int missileX = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
+        int missileY = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
+        for (int i = 0; i < 8; i++) {
+            Missile m = new Missile(missileX, missileY, good, dirs[i], this.tc);
+            tc.missiles.add(m);
+        }
+    }
+
     public Rectangle getRect(){
         return new Rectangle(x, y, WIDTH, HEIGHT);
     }
@@ -247,6 +264,19 @@ public class Tank {
     private void stay(){
         this.x = oldX;
         this.y = oldY;
+    }
+
+    public void collidesWithTank(Tank t){
+        if(this != t && this.getRect().intersects(t.getRect())){
+            this.stay();
+            t.stay();
+        }
+    }
+
+    public void collidesWithTanks(List<Tank> tanks){
+        for (int i = 0; i < tanks.size(); i++) {
+            collidesWithTank(tanks.get(i));
+        }
     }
 
     public void collidesWithWall(Wall w){
