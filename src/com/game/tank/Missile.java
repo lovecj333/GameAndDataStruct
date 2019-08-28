@@ -96,4 +96,10 @@ public class Missile {
             hitTank(enemyTanks.get(i));
         }
     }
+
+    public void hitWall(Wall w){
+        if(this.getRect().intersects(w.getRect())){
+            this.live = false;
+        }
+    }
 }
