@@ -18,6 +18,8 @@ public class Tank {
     private Direction dir;
     private Direction ptDir = Direction.D;
     private boolean good;
+    private int blood = 100;
+    private BloodBar bloodBar = new BloodBar();
     private boolean live = true;
     private int step = r.nextInt(12) + 3;
     private TankClient tc;
@@ -52,6 +54,9 @@ public class Tank {
         }
         g.fillOval(x, y, WIDTH, HEIGHT);
         g.setColor(c);
+        if(good){
+            bloodBar.draw(g);
+        }
 
         int lineX1 = x + Tank.WIDTH/2;
         int lineY1 = y + Tank.HEIGHT/2;
@@ -295,5 +300,25 @@ public class Tank {
 
     public boolean isGood() {
         return good;
+    }
+
+    public int getBlood() {
+        return blood;
+    }
+
+    public void setBlood(int blood) {
+        this.blood = blood;
+    }
+
+    private class BloodBar{
+
+        public void draw(Graphics g){
+            Color c = g.getColor();
+            g.setColor(Color.RED);
+            g.drawRect(x, y-10, WIDTH, 10);
+            int w = WIDTH * blood / 100;
+            g.fillRect(x, y-10, w, 10);
+            g.setColor(c);
+        }
     }
 }

@@ -45,10 +45,11 @@ public class TankClient extends Frame {
         g.drawString("missiles count : "+missiles.size(),10,50);
         g.drawString("explodes count : "+explodes.size(),10,70);
         g.drawString("enemyTanks count : "+enemyTanks.size(),10,90);
+        g.drawString("myTank blood value : "+myTank.getBlood(), 10, 110);
         for(int i = 0; i < missiles.size(); i++){
             Missile m = missiles.get(i);
             m.hitTanks(enemyTanks);
-            //m.hitTank(myTank);
+            m.hitTank(myTank);
             m.hitWall(wall1);
             m.hitWall(wall2);
             m.draw(g);
