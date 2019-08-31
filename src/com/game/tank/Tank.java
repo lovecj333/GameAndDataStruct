@@ -197,6 +197,12 @@ public class Tank {
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
         switch(key){
+            case KeyEvent.VK_F2:
+                if(!this.live){
+                    this.live = true;
+                    this.blood = 100;
+                }
+                break;
             case KeyEvent.VK_W:
                 vk_up = true;
                 break;
@@ -287,6 +293,13 @@ public class Tank {
     public void collidesWithWall(Wall w){
         if(this.getRect().intersects(w.getRect())){
             this.stay();
+        }
+    }
+
+    public void collidesWithBuff(Buff b){
+        if(this.getRect().intersects(b.getRect())){
+            this.blood = 100;
+            b.setLive(false);
         }
     }
 

@@ -16,6 +16,7 @@ public class TankClient extends Frame {
     Tank myTank = new Tank(50, 50, true, Direction.STOP,this);
     Wall wall1 = new Wall(100,200,20,150, this);
     Wall wall2 = new Wall(300,130,300,20, this);
+    Buff buff = new Buff(this);
     List<Tank> enemyTanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
     List<Missile> missiles = new ArrayList<>();
@@ -46,6 +47,11 @@ public class TankClient extends Frame {
         g.drawString("explodes count : "+explodes.size(),10,70);
         g.drawString("enemyTanks count : "+enemyTanks.size(),10,90);
         g.drawString("myTank blood value : "+myTank.getBlood(), 10, 110);
+        if(enemyTanks.size() <= 0){
+            for(int i = 0; i < 5; i++){
+                enemyTanks.add(new Tank(100+(70*(i+1)),70,false, Direction.D, this));
+            }
+        }
         for(int i = 0; i < missiles.size(); i++){
             Missile m = missiles.get(i);
             m.hitTanks(enemyTanks);
@@ -66,8 +72,10 @@ public class TankClient extends Frame {
             enemyTank.draw(g);
         }
         myTank.draw(g);
+        myTank.collidesWithBuff(buff);
         wall1.draw(g);
         wall2.draw(g);
+        buff.draw(g);
     }
 
     @Override
