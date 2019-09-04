@@ -16,7 +16,7 @@ public class TankClient extends Frame {
     Tank myTank = new Tank(50, 50, true, Direction.STOP,this);
     List<Explode> explodes = new ArrayList<>();
     List<Missile> missiles = new ArrayList<>();
-    NetClient netClient = new NetClient();
+    NetClient netClient = new NetClient(this);
 
     public void lauchFrame(){
         this.setLocation(400,300);

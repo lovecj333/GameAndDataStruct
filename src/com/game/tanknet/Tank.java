@@ -11,6 +11,7 @@ public class Tank {
     public static final int WIDTH = 30;
     public static final int HEIGHT = 30;
     private static Random r = new Random();
+    private int id;
     private int x;
     private int y;
     private int oldX;
@@ -50,6 +51,7 @@ public class Tank {
             g.setColor(Color.BLUE);
         }
         g.fillOval(x, y, WIDTH, HEIGHT);
+        g.drawString("ID:"+id, x, y - 10);
         g.setColor(c);
         if(good){
             bloodBar.draw(g);
@@ -306,6 +308,38 @@ public class Tank {
 
     public void setBlood(int blood) {
         this.blood = blood;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Direction getDir() {
+        return dir;
+    }
+
+    public void setDir(Direction dir) {
+        this.dir = dir;
     }
 
     private class BloodBar{
