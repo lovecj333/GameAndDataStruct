@@ -13,7 +13,8 @@ public class TankClient extends Frame {
     public static final int GAME_WIDTH = 800;
     public static final int GAME_HEIGHT = 600;
     Image offScreenImage = null;
-    Tank myTank = new Tank(50, 50, true, Direction.STOP,this);
+    public Tank myTank = new Tank(50, 50, true, Direction.STOP,this);
+    public List<Tank> enemyTanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
     List<Missile> missiles = new ArrayList<>();
     NetClient netClient = new NetClient(this);
@@ -49,6 +50,10 @@ public class TankClient extends Frame {
         for(int i = 0; i < explodes.size(); i++){
             Explode e = explodes.get(i);
             e.draw(g);
+        }
+        for(int i = 0; i < enemyTanks.size(); i++){
+            Tank enemyTank = enemyTanks.get(i);
+            enemyTank.draw(g);
         }
         myTank.draw(g);
     }

@@ -1,5 +1,7 @@
 package com.game.tanknet;
 
+import com.game.tanknet.msg.TankMoveMsg;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -172,6 +174,7 @@ public class Tank {
     }
 
     private void locateDirection(){
+        Direction oldDir = dir;
         if(vk_up && !vk_down && !vk_left && !vk_right){
             dir = Direction.U;
         }else if(!vk_up && vk_down && !vk_left && !vk_right){
@@ -190,6 +193,10 @@ public class Tank {
             dir = Direction.RD;
         }else if(!vk_up && !vk_down && !vk_left && !vk_right){
             dir = Direction.STOP;
+        }
+        if(dir != oldDir){
+            TankMoveMsg msg = new TankMoveMsg(id, dir);
+            tc.netClient.send(msg);
         }
     }
 

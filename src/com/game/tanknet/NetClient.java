@@ -1,7 +1,8 @@
 package com.game.tanknet;
 
+import com.game.tanknet.msg.Msg;
+import com.game.tanknet.msg.TankMoveMsg;
 import com.game.tanknet.msg.TankNewMsg;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -43,8 +44,12 @@ public class NetClient {
         }
     }
 
-    public void send(TankNewMsg msg) throws Exception {
-        msg.send(ds, "127.0.0.1",6666);
+    public void send(Msg msg){
+        try {
+            msg.send(ds, "127.0.0.1",6666);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class UDPClientThread implements Runnable{
@@ -67,7 +72,16 @@ public class NetClient {
         private void parse(DatagramPacket packet) throws Exception{
             ByteArrayInputStream bais = new ByteArrayInputStream(buf, 0, packet.getLength());
             DataInputStream dis = new DataInputStream(bais);
-            TankNewMsg msg = new TankNewMsg();
+            Msg msg = null;
+            int msgType = dis.readInt();
+            switch (msgType){
+                case Msg.TANK_NEW_MSG:
+                    msg = new TankNewMsg(tc);
+                    break;
+                case Msg.TANK_MOVE_MSG:
+                    msg = new TankMoveMsg(tc);
+                    break;
+            }
             msg.parse(dis);
         }
     }

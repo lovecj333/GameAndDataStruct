@@ -25,7 +25,7 @@ public class TankServer {
             Client client = new Client(ip, udpPort);
             clients.add(client);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-            dos.writeInt(clientIdStart);
+            dos.writeInt(clientIdStart++);
             socket.close();
         }
     }

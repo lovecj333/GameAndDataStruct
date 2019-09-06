@@ -10,47 +10,49 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-public class TankNewMsg implements Msg{
+public class TankMoveMsg implements Msg{
 
-    int msgType = Msg.TANK_NEW_MSG;
+    int msgType = Msg.TANK_MOVE_MSG;
     TankClient tc;
-    Tank tank;
+    int id;
+    Direction dir;
 
-    public TankNewMsg(TankClient tc){
+    public TankMoveMsg(TankClient tc){
         this.tc = tc;
     }
 
-    public TankNewMsg(Tank tank){
-        this.tank = tank;
+    public TankMoveMsg(int id, Direction dir){
+        this.id = id;
+        this.dir = dir;
     }
 
     @Override
-    public void send(DatagramSocket ds, String ip, int udpPort) throws Exception{
+    public void send(DatagramSocket ds, String ip, int udpPort) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(msgType);
-        dos.writeInt(tank.getId());
-        dos.writeInt(tank.getX());
-        dos.writeInt(tank.getY());
-        dos.writeInt(tank.getDir().ordinal());
-        dos.writeBoolean(tank.isGood());
+        dos.writeInt(id);
+        dos.writeInt(dir.ordinal());
         byte[] buf = baos.toByteArray();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, new InetSocketAddress(ip, udpPort));
         ds.send(packet);
     }
 
     @Override
-    public void parse(DataInputStream dis) throws Exception{
+    public void parse(DataInputStream dis) throws Exception {
         int id = dis.readInt();
         if(id == tc.myTank.getId()){
             return;
         }
-        int x = dis.readInt();
-        int y = dis.readInt();
         Direction dir = Direction.values()[dis.readInt()];
-        boolean good = dis.readBoolean();
-        Tank t = new Tank(x, y, good, dir, tc);
-        t.setId(id);
-        tc.enemyTanks.add(t);
+        boolean exist = false;
+        for (int i = 0; i < tc.enemyTanks.size(); i++) {
+            Tank t = tc.enemyTanks.get(i);
+            if(t.getId() == id){
+                exist = true;
+                t.setDir(dir);
+                break;
+            }
+        }
     }
 }
