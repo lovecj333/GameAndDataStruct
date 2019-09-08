@@ -15,14 +15,18 @@ public class TankMoveMsg implements Msg{
     int msgType = Msg.TANK_MOVE_MSG;
     TankClient tc;
     int id;
+    int x;
+    int y;
     Direction dir;
 
     public TankMoveMsg(TankClient tc){
         this.tc = tc;
     }
 
-    public TankMoveMsg(int id, Direction dir){
+    public TankMoveMsg(int id, int x, int y, Direction dir){
         this.id = id;
+        this.x = x;
+        this.y = y;
         this.dir = dir;
     }
 
@@ -32,6 +36,8 @@ public class TankMoveMsg implements Msg{
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(msgType);
         dos.writeInt(id);
+        dos.writeInt(x);
+        dos.writeInt(y);
         dos.writeInt(dir.ordinal());
         byte[] buf = baos.toByteArray();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, new InetSocketAddress(ip, udpPort));
@@ -44,6 +50,8 @@ public class TankMoveMsg implements Msg{
         if(id == tc.myTank.getId()){
             return;
         }
+        int x = dis.readInt();
+        int y = dis.readInt();
         Direction dir = Direction.values()[dis.readInt()];
         boolean exist = false;
         for (int i = 0; i < tc.enemyTanks.size(); i++) {
@@ -51,6 +59,8 @@ public class TankMoveMsg implements Msg{
             if(t.getId() == id){
                 exist = true;
                 t.setDir(dir);
+                t.setX(x);
+                t.setY(y);
                 break;
             }
         }

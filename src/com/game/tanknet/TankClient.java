@@ -17,7 +17,8 @@ public class TankClient extends Frame {
     public List<Tank> enemyTanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
     List<Missile> missiles = new ArrayList<>();
-    NetClient netClient = new NetClient(this);
+    public NetClient netClient = new NetClient(this);
+    ConnDialog connDialog = new ConnDialog();
 
     public void lauchFrame(){
         this.setLocation(400,300);
@@ -34,6 +35,7 @@ public class TankClient extends Frame {
         this.setVisible(true);
         this.addKeyListener(new KeyMonitor());
         new Thread(new PaintThread()).start();
+        connDialog.setVisible(true);
         netClient.connectServer("127.0.0.1", 8888);
     }
 
@@ -95,6 +97,22 @@ public class TankClient extends Frame {
         @Override
         public void keyReleased(KeyEvent e) {
             myTank.keyReleased(e);
+        }
+    }
+
+    private class ConnDialog extends Dialog{
+        public ConnDialog(){
+            super(TankClient.this, true);
+            this.setLayout(new FlowLayout());
+            this.add(new Label("IP:"));
+            this.add(new TextField(12));
+            this.add(new Label("PORT:"));
+            this.add(new TextField(5));
+            this.add(new Label("UDP PORT"));
+            this.add(new TextField(5));
+            this.pack();
+            this.addWindowListener(new WindowAdapter() {
+            });
         }
     }
 

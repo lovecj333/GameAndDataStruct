@@ -10,22 +10,22 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-public class TankNewMsg implements Msg{
+public class TankSyncMsg implements Msg{
 
-    int msgType = Msg.TANK_NEW_MSG;
+    int msgType = Msg.TANK_SYNC_MSG;
     TankClient tc;
     Tank tank;
 
-    public TankNewMsg(TankClient tc){
+    public TankSyncMsg(TankClient tc){
         this.tc = tc;
     }
 
-    public TankNewMsg(Tank tank){
+    public TankSyncMsg(Tank tank){
         this.tank = tank;
     }
 
     @Override
-    public void send(DatagramSocket ds, String ip, int udpPort) throws Exception{
+    public void send(DatagramSocket ds, String ip, int udpPort) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(msgType);
@@ -40,19 +40,27 @@ public class TankNewMsg implements Msg{
     }
 
     @Override
-    public void parse(DataInputStream dis) throws Exception{
+    public void parse(DataInputStream dis) throws Exception {
         int id = dis.readInt();
         if(id == tc.myTank.getId()){
             return;
         }
-        int x = dis.readInt();
-        int y = dis.readInt();
-        Direction dir = Direction.values()[dis.readInt()];
-        boolean good = dis.readBoolean();
-        Tank t = new Tank(x, y, good, dir, tc);
-        t.setId(id);
-        tc.enemyTanks.add(t);
-        TankSyncMsg tankSyncMsg = new TankSyncMsg(tc.myTank);
-        tc.netClient.send(tankSyncMsg);
+        boolean exist = false;
+        for (int i = 0; i < tc.enemyTanks.size(); i++) {
+            Tank t = tc.enemyTanks.get(i);
+            if(id == t.getId()){
+                exist = true;
+                break;
+            }
+        }
+        if(!exist){
+            int x = dis.readInt();
+            int y = dis.readInt();
+            Direction dir = Direction.values()[dis.readInt()];
+            boolean good = dis.readBoolean();
+            Tank t = new Tank(x, y, good, dir, tc);
+            t.setId(id);
+            tc.enemyTanks.add(t);
+        }
     }
 }

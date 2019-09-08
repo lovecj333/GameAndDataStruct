@@ -3,6 +3,8 @@ package com.game.tanknet;
 import com.game.tanknet.msg.Msg;
 import com.game.tanknet.msg.TankMoveMsg;
 import com.game.tanknet.msg.TankNewMsg;
+import com.game.tanknet.msg.TankSyncMsg;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,7 +15,7 @@ import java.net.Socket;
 public class NetClient {
 
     private TankClient tc;
-    private int udpPort = 2223;
+    private int udpPort = 2225;
     private DatagramSocket ds;
 
     public NetClient(TankClient tc){
@@ -80,6 +82,9 @@ public class NetClient {
                     break;
                 case Msg.TANK_MOVE_MSG:
                     msg = new TankMoveMsg(tc);
+                    break;
+                case Msg.TANK_SYNC_MSG:
+                    msg = new TankSyncMsg(tc);
                     break;
             }
             msg.parse(dis);

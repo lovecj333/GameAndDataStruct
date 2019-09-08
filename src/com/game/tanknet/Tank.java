@@ -195,7 +195,7 @@ public class Tank {
             dir = Direction.STOP;
         }
         if(dir != oldDir){
-            TankMoveMsg msg = new TankMoveMsg(id, dir);
+            TankMoveMsg msg = new TankMoveMsg(id, x, y, dir);
             tc.netClient.send(msg);
         }
     }

@@ -7,6 +7,7 @@ public interface Msg {
 
     int TANK_NEW_MSG = 1;
     int TANK_MOVE_MSG = 2;
+    int TANK_SYNC_MSG = 3;
 
     void send(DatagramSocket ds, String ip, int udpPort) throws Exception;
 
