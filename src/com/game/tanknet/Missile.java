@@ -8,14 +8,31 @@ public class Missile {
     public static final int SPEED = 10;
     public static final int WIDTH = 10;
     public static final int HEIGHT = 10;
-    private int x;
-    private int y;
-    private Direction dir;
-    private boolean good;
+    public static int missileIdGen = 1;
+    public int tankId;
+    public int id;
+    public int x;
+    public int y;
+    public Direction dir;
+    public boolean good;
     private boolean live = true;
     private TankClient tc;
 
-    public Missile(int x, int y, boolean good, Direction dir, TankClient tc) {
+    public Missile(int tankId, int x, int y,
+                   boolean good, Direction dir, TankClient tc) {
+        this.tankId = tankId;
+        this.id = missileIdGen++;
+        this.x = x;
+        this.y = y;
+        this.good = good;
+        this.dir = dir;
+        this.tc = tc;
+    }
+
+    public Missile(int tankId, int id, int x, int y,
+                   boolean good, Direction dir, TankClient tc) {
+        this.tankId = tankId;
+        this.id = id;
         this.x = x;
         this.y = y;
         this.good = good;
@@ -84,14 +101,7 @@ public class Missile {
             return;
         }
         if(t.isLive() && this.getRect().intersects(t.getRect())){
-            if(t.isGood()){
-                t.setBlood(t.getBlood() - 20);
-                if(t.getBlood() <= 0){
-                    t.setLive(false);
-                }
-            }else{
-                t.setLive(false);
-            }
+            t.setLive(false);
             this.live = false;
             Explode e = new Explode(x, y, tc);
             this.tc.explodes.add(e);

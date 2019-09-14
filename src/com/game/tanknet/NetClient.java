@@ -1,10 +1,6 @@
 package com.game.tanknet;
 
-import com.game.tanknet.msg.Msg;
-import com.game.tanknet.msg.TankMoveMsg;
-import com.game.tanknet.msg.TankNewMsg;
-import com.game.tanknet.msg.TankSyncMsg;
-
+import com.game.tanknet.msg.*;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,19 +11,18 @@ import java.net.Socket;
 public class NetClient {
 
     private TankClient tc;
-    private int udpPort = 2225;
     private DatagramSocket ds;
 
     public NetClient(TankClient tc){
         this.tc = tc;
+    }
+
+    public void connectServer(String ip, int port, int udpPort) {
         try {
             this.ds = new DatagramSocket(udpPort);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void connectServer(String ip, int port) {
         try {
             new Thread(new UDPClientThread()).start();
             Socket socket = new Socket(ip, port);
@@ -36,6 +31,11 @@ public class NetClient {
             DataInputStream dis = new DataInputStream(socket.getInputStream());
             int tankId = dis.readInt();
             tc.myTank.setId(tankId);
+            if(tankId % 2 == 0){
+                tc.myTank.setGood(true);
+            }else{
+                tc.myTank.setGood(false);
+            }
             System.out.println("connect tank server success tankId = "+tankId);
             socket.close();
 
@@ -85,6 +85,9 @@ public class NetClient {
                     break;
                 case Msg.TANK_SYNC_MSG:
                     msg = new TankSyncMsg(tc);
+                    break;
+                case Msg.MISSILE_NEW_MSG:
+                    msg = new MissileNewMsg(tc);
                     break;
             }
             msg.parse(dis);

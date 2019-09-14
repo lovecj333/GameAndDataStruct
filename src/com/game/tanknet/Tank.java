@@ -1,7 +1,7 @@
 package com.game.tanknet;
 
+import com.game.tanknet.msg.MissileNewMsg;
 import com.game.tanknet.msg.TankMoveMsg;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -21,10 +21,7 @@ public class Tank {
     private Direction dir;
     private Direction ptDir = Direction.D;
     private boolean good;
-    private int blood = 100;
-    private BloodBar bloodBar = new BloodBar();
     private boolean live = true;
-    private int step = r.nextInt(12) + 3;
     private TankClient tc;
 
     private boolean vk_up = false;
@@ -55,9 +52,6 @@ public class Tank {
         g.fillOval(x, y, WIDTH, HEIGHT);
         g.drawString("ID:"+id, x, y - 10);
         g.setColor(c);
-        if(good){
-            bloodBar.draw(g);
-        }
 
         int lineX1 = x + Tank.WIDTH/2;
         int lineY1 = y + Tank.HEIGHT/2;
@@ -159,18 +153,6 @@ public class Tank {
         if(y + Tank.HEIGHT > TankClient.GAME_HEIGHT){
             y = TankClient.GAME_HEIGHT - Tank.HEIGHT;
         }
-        if(!good){
-            if(step == 0){
-                step = r.nextInt(12) + 3;
-                //EnemyTank每次move之后都随机方向加入step是为了转方向平缓一些
-                Direction[] dirs = Direction.values();
-                this.dir = dirs[r.nextInt(dirs.length)];
-            }
-            step--;
-            if(r.nextInt(40) > 38){
-                this.fire();
-            }
-        }
     }
 
     private void locateDirection(){
@@ -206,7 +188,6 @@ public class Tank {
             case KeyEvent.VK_F2:
                 if(!this.live){
                     this.live = true;
-                    this.blood = 100;
                 }
                 break;
             case KeyEvent.VK_W:
@@ -257,8 +238,10 @@ public class Tank {
         //计算子弹的坐标 位置固定在坦克的中心
         int missileX = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
         int missileY = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
-        Missile m = new Missile(missileX, missileY, good, ptDir, this.tc);
+        Missile m = new Missile(id, missileX, missileY, good, ptDir, this.tc);
         tc.missiles.add(m);
+        MissileNewMsg msg = new MissileNewMsg(m);
+        tc.netClient.send(msg);
     }
 
     public void superFire(){
@@ -269,8 +252,10 @@ public class Tank {
         int missileX = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
         int missileY = this.y + Tank.HEIGHT/2 - Missile.HEIGHT/2;
         for (int i = 0; i < 8; i++) {
-            Missile m = new Missile(missileX, missileY, good, dirs[i], this.tc);
+            Missile m = new Missile(id, missileX, missileY, good, dirs[i], this.tc);
             tc.missiles.add(m);
+            MissileNewMsg msg = new MissileNewMsg(m);
+            tc.netClient.send(msg);
         }
     }
 
@@ -309,12 +294,8 @@ public class Tank {
         return good;
     }
 
-    public int getBlood() {
-        return blood;
-    }
-
-    public void setBlood(int blood) {
-        this.blood = blood;
+    public void setGood(boolean good) {
+        this.good = good;
     }
 
     public int getId() {
@@ -347,17 +328,5 @@ public class Tank {
 
     public void setDir(Direction dir) {
         this.dir = dir;
-    }
-
-    private class BloodBar{
-
-        public void draw(Graphics g){
-            Color c = g.getColor();
-            g.setColor(Color.RED);
-            g.drawRect(x, y-10, WIDTH, 10);
-            int w = WIDTH * blood / 100;
-            g.fillRect(x, y-10, w, 10);
-            g.setColor(c);
-        }
     }
 }

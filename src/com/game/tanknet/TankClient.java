@@ -1,10 +1,7 @@
 package com.game.tanknet;
 
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +13,12 @@ public class TankClient extends Frame {
     public Tank myTank = new Tank(50, 50, true, Direction.STOP,this);
     public List<Tank> enemyTanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
-    List<Missile> missiles = new ArrayList<>();
+    public List<Missile> missiles = new ArrayList<>();
     public NetClient netClient = new NetClient(this);
     ConnDialog connDialog = new ConnDialog();
 
     public void lauchFrame(){
-        this.setLocation(400,300);
+        this.setLocation(400,200);
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
         this.setTitle("TankWarNet");
         this.setBackground(Color.GREEN);
@@ -33,20 +30,19 @@ public class TankClient extends Frame {
         });
         this.setResizable(false);
         this.setVisible(true);
+        connDialog.setVisible(true);
         this.addKeyListener(new KeyMonitor());
         new Thread(new PaintThread()).start();
-        connDialog.setVisible(true);
-        netClient.connectServer("127.0.0.1", 8888);
     }
 
     @Override
     public void paint(Graphics g) {
         g.drawString("missiles count : "+missiles.size(),10,50);
         g.drawString("explodes count : "+explodes.size(),10,70);
-        g.drawString("myTank blood value : "+myTank.getBlood(), 10, 110);
         for(int i = 0; i < missiles.size(); i++){
             Missile m = missiles.get(i);
             m.hitTank(myTank);
+            m.hitTanks(enemyTanks);
             m.draw(g);
         }
         for(int i = 0; i < explodes.size(); i++){
@@ -103,15 +99,35 @@ public class TankClient extends Frame {
     private class ConnDialog extends Dialog{
         public ConnDialog(){
             super(TankClient.this, true);
+            TextField textIp = new TextField("127.0.0.1",12);
+            TextField textPort = new TextField("8888",5);
+            TextField textUdpPort = new TextField("2223",5);
+            Button button = new Button("确定");
             this.setLayout(new FlowLayout());
             this.add(new Label("IP:"));
-            this.add(new TextField(12));
+            this.add(textIp);
             this.add(new Label("PORT:"));
-            this.add(new TextField(5));
+            this.add(textPort);
             this.add(new Label("UDP PORT"));
-            this.add(new TextField(5));
+            this.add(textUdpPort);
+            this.add(button);
             this.pack();
+            this.setLocation(500,500);
             this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    setVisible(false);
+                }
+            });
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String ip = textIp.getText();
+                    int port = Integer.parseInt(textPort.getText());
+                    int udpPort = Integer.parseInt(textUdpPort.getText());
+                    netClient.connectServer(ip, port, udpPort);
+                    setVisible(false);
+                }
             });
         }
     }
