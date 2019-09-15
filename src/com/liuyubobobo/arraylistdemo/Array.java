@@ -56,6 +56,16 @@ public class Array<E> {
         size++;
     }
 
+    //查询最后一个元素
+    public E getLast(){
+        return get(size - 1);
+    }
+
+    //查询第一个元素
+    public E getFirst(){
+        return get(0);
+    }
+
     //获取index索引位置的元素
     public E get(int index){
         if(index < 0 || index >= size){
