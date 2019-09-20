@@ -27,5 +27,9 @@ public class TestQueue {
         LoopQueue<Integer> loopQueue = new LoopQueue<>();
         double t2 = testQueue(loopQueue, opCount);
         System.out.println("LoopQueue use : "+t2+" s");
+
+        LinkedListQueue<Integer> linkedListQueue = new LinkedListQueue<>();
+        double t3 = testQueue(linkedListQueue, opCount);
+        System.out.println("LinkedListQueue use : "+t3+" s");
     }
 }
